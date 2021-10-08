@@ -1,11 +1,20 @@
 import argparse
 import logging
-
+import asyncio
+import sys
+import os
+#import discord
+#from discord.ext import commands, tasks
+from mylogger import MyLogger
 
 # Constants and global parameters
 DEBUG = False
 
 
+def main():
+    """Main function of bot"""
+
+    pass
 
 
 if __name__ == '__main__':
@@ -17,7 +26,7 @@ if __name__ == '__main__':
         print('Debug mode ON.')
         level = logging.DEBUG
     else:
-        level = logging.WARNING
+        level = logging.INFO
     '''logging.basicConfig(
         # filename='debug.log',
         format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
@@ -25,6 +34,7 @@ if __name__ == '__main__':
         level=level)'''
 
     # Create my logger
+    '''
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     formats = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
@@ -38,9 +48,15 @@ if __name__ == '__main__':
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-
+    '''
+    logger = MyLogger(__name__, levels=(level, logging.INFO), filename=f"{__name__}.log")
     logger.debug('Debug message')
     logger.info('INFO message')
     logger.warning('WARNING message')
+    logger.critical('CRITICAL message')
+    try:
+        raise Exception('TEST EXCEPTION')
+    except Exception as e:
+        logger.error(e, exc_info=sys.exc_info())
 
     pass

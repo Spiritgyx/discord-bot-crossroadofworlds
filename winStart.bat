@@ -1,3 +1,3 @@
 @echo off
-python discord.py -d
+python bot/mydiscordbot.py -d
 pause

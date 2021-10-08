@@ -8,6 +8,7 @@ __pycache__/
 
 # debugger
 debug.log
+/logs/
 
 # C extensions
 *.so
