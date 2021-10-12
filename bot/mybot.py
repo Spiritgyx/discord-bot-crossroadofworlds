@@ -14,7 +14,8 @@ def get_prefix(cl, msg: commands.Context):
     return prefixes.get(str(msg.guild.id), '##')
 
 
-# TODO: simple bot with commands
+# TODO:
+# TODO: documentation
 class Bot(commands.Bot):
     def __init__(self, *args, token=None, level=20, **kwargs):
         self.level = level

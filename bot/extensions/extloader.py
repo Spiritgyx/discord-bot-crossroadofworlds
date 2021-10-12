@@ -25,7 +25,7 @@ class Loader(commands.Cog):
     async def load(self, ctx: commands.Context, ext: str):
         try:
             check_ext(ext)
-            await self.client.load_extension(ext)
+            self.client.load_extension(ext)
         except Exception as e:
             self.logger.error(f'Extension "{ext}" load failed. {e}')
         else:
@@ -37,7 +37,7 @@ class Loader(commands.Cog):
     async def unload(self, ctx: commands.Context, ext: str):
         try:
             check_ext(ext)
-            await self.client.unload_extension(ext)
+            self.client.unload_extension(ext)
         except Exception as e:
             self.logger.error(f'Extension "{ext}" unload failed. {e}')
         else:
@@ -50,8 +50,8 @@ class Loader(commands.Cog):
         try:
             check_ext(ext)
 
-            await self.client.unload_extension(ext)
-            await self.client.load_extension(ext)
+            self.client.unload_extension(ext)
+            self.client.load_extension(ext)
         except Exception as e:
             self.logger.error(f'Extension "{ext}" reload failed. {e}')
         else:
