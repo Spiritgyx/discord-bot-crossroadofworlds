@@ -1,12 +1,22 @@
 import discord.ext.commands
 from discord.ext import commands, tasks
 from discord import Permissions
-import bot.bot
+import bot.mybot
 from bot.mylogger import MyLogger
 
 
+def check_ext(ext: str):
+    if not ext.startswith('bot.extensions.'):
+        raise Exception("Invalid extension path.")
+    if ext.endswith(('.basic', '.extloader')):
+        raise Exception("Invalid core extensions.")
+    if ext.find('..') != -1:
+        raise Exception("Invalid extension path.")
+    return True
+
+
 class Loader(commands.Cog):
-    def __init__(self, client: bot.bot.Bot):
+    def __init__(self, client: bot.mybot.Bot):
         self.client = client
         self.logger = MyLogger('Loader', 'loader.log', levels=(client.level, 20))
 
@@ -14,9 +24,10 @@ class Loader(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def load(self, ctx: commands.Context, ext: str):
         try:
+            check_ext(ext)
             await self.client.load_extension(ext)
         except Exception as e:
-            self.logger.error(f'Extension "{ext}" load failed.')
+            self.logger.error(f'Extension "{ext}" load failed. {e}')
         else:
             self.logger.info(f'Extension "{ext}" loaded.')
             await ctx.send(f'Extension "{ext}" loaded.')
@@ -25,9 +36,10 @@ class Loader(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def unload(self, ctx: commands.Context, ext: str):
         try:
+            check_ext(ext)
             await self.client.unload_extension(ext)
         except Exception as e:
-            self.logger.error(f'Extension "{ext}" unload failed.')
+            self.logger.error(f'Extension "{ext}" unload failed. {e}')
         else:
             self.logger.info(f'Extension "{ext}" unloaded.')
             await ctx.send(f'Extension "{ext}" unloaded.')
@@ -36,14 +48,16 @@ class Loader(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def reload(self, ctx: commands.Context, ext: str):
         try:
+            check_ext(ext)
+
             await self.client.unload_extension(ext)
             await self.client.load_extension(ext)
         except Exception as e:
-            self.logger.error(f'Extension "{ext}" reload failed.')
+            self.logger.error(f'Extension "{ext}" reload failed. {e}')
         else:
             self.logger.info(f'Extension "{ext}" reloaded.')
             await ctx.send(f'Extension "{ext}" reloaded.')
 
 
-def setup(client: bot.bot.Bot):
+def setup(client: bot.mybot.Bot):
     client.add_cog(Loader(client))

@@ -3,18 +3,32 @@ import logging
 import asyncio
 import sys
 import os
-#import discord
-#from discord.ext import commands, tasks
-from mylogger import MyLogger
+import bot
+from bot.mybot import Bot, get_prefix
+from bot.mylogger import MyLogger
 
 # Constants and global parameters
 DEBUG = False
 
 
-def main():
-    """Main function of bot"""
-
-    pass
+def get_token() -> str:
+    """Return token from <.env> file.
+    If the file does not exist, then the token is entered manually."""
+    if os.path.exists('.env'):
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+            token = os.getenv('TOKEN')
+            if not token:
+                raise Exception("Token is empty")
+            return token
+        except:
+            logger.warning('Token is empty')
+            print(sys.exc_info())
+    token = input("Enter bot token: ")
+    with open('.env', 'w') as f:
+        f.write(f"TOKEN='{token}'")
+    return token
 
 
 if __name__ == '__main__':
@@ -27,36 +41,11 @@ if __name__ == '__main__':
         level = logging.DEBUG
     else:
         level = logging.INFO
-    '''logging.basicConfig(
-        # filename='debug.log',
-        format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-        datefmt='%Y-%m-%dT%H:%M:%S',
-        level=level)'''
 
     # Create my logger
-    '''
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    formats = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-                                datefmt='%Y-%m-%dT%H:%M:%S')
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(level)
-    console_handler.setFormatter(formats)
-    file_handler = logging.FileHandler('debug.log')
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formats)
-
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-    '''
     logger = MyLogger(__name__, levels=(level, logging.INFO), filename=f"{__name__}.log")
-    logger.debug('Debug message')
-    logger.info('INFO message')
-    logger.warning('WARNING message')
-    logger.critical('CRITICAL message')
-    try:
-        raise Exception('TEST EXCEPTION')
-    except Exception as e:
-        logger.error(e, exc_info=sys.exc_info())
-
-    pass
+    logger.debug('Start program')
+    token = get_token()
+    client = Bot(command_prefix=get_prefix, level=level)
+    client.load_exts()
+    client.run(token)

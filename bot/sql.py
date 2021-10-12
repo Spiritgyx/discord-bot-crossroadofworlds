@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from bot.mylogger import MyLogger
+from mylogger import MyLogger
 
 
 SQL_CREATE_TABLES = {
@@ -9,7 +9,7 @@ SQL_CREATE_TABLES = {
                     "guild_name text NOT NULL"
                     ");"),
     "list_members": ("CREATE TABLE IF NOT EXISTS list_members ("
-                     "id integer PRIMARY KEY AUTOINCREMENT,"
+                     "id integer PRIMARY KEY,"
                      "guild_id integer NOT NULL,"
                      "member_id integer NOT NULL,"
                      "member_tag text NOT NULL,"
@@ -17,7 +17,7 @@ SQL_CREATE_TABLES = {
                      "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id)"
                      ");"),
     "list_channels": ("CREATE TABLE IF NOT EXISTS list_channels ("
-                      "id integer PRIMARY KEY AUTOINCREMENT,"
+                      "id integer PRIMARY KEY,"
                       "guild_id integer NOT NULL,"
                       "channel_id integer NOT NULL,"
                       "channel_name text NOT NULL,"
@@ -34,7 +34,12 @@ class Sql:
             if self.conn is None:
                 return
             self.create_tables()
-
+        else:
+            try:
+                self.conn = sqlite3.connect(db_path)
+            except sqlite3.Error as e:
+                self.logger.error(e)
+                return
 
     def create_db(self, db_path='database.db'):
         try:
@@ -55,3 +60,38 @@ class Sql:
                 self.logger.info(f"Table [{k}] created.")
         self.conn.commit()
 
+    def get_guilds(self) -> list:
+        c = self.conn.cursor()
+        c.execute((
+            "SELECT guild_id FROM list_guilds;"
+        ))
+        guilds = c.fetchall()
+
+        return guilds
+
+    def add_guilds(self, guilds: list):
+        c = self.conn.cursor()
+        for guild in guilds:
+            c.execute((
+                "INSERT INTO list_guilds (guild_id, guild_name) VALUES (?, ?);"
+            ), guild)
+        self.conn.commit()
+        self.logger.info(f"Added {len(guilds)} guilds in DB.")
+
+    def get_members(self, guild_id):
+        c = self.conn.cursor()
+        c.execute((
+            f"SELECT * FROM list_members WHERE guild_id={guild_id};"
+        ))
+        members = c.fetchall()
+        return members
+
+    def add_members(self, members: list):
+        c = self.conn.cursor()
+        for member in members:
+            self.logger.debug(f"Add new member: {member}")
+            c.execute((
+                "INSERT INTO list_members (guild_id, member_id, member_tag, member_nickname) VALUES (?, ?, ?, ?);"
+            ), member)
+        self.conn.commit()
+        self.logger.info(f"Added {len(members)} members in DB.")
