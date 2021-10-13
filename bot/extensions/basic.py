@@ -36,11 +36,19 @@ class Basic(commands.Cog):
             sql_members = self.sql.get_members(guild.id)
             if len(sql_members) > 0:
                 sql_members = list(map(lambda x: x[2], sql_members))
-            for member in guild.members:
-                if member.id not in sql_members:
-                    members_add.append(
-                        (member.guild.id, member.id, member.name+'#'+member.discriminator, member.display_name)
-                    )
+            #self.client
+            self.logger.debug(f'Guild: {guild.id}; Count: {len(guild.members)}; Members: {str(guild.members)}')
+            fetch_members = await guild.fetch_members().flatten()
+            self.logger.debug('Fetch members: '+str(fetch_members))
+            while len(fetch_members) != 0:
+                for member in fetch_members:
+                    self.logger.debug(f'Member: {str(member)}')
+                    if member.id not in sql_members:
+                        members_add.append(
+                            (member.guild.id, member.id, member.name+'#'+member.discriminator, member.display_name)
+                        )
+                        sql_members.append(member.id)
+                fetch_members = await guild.fetch_members(after=fetch_members[0]).flatten()
         self.sql.add_members(members_add)
         self.logger.info('Bot is ready!')
 
@@ -59,9 +67,13 @@ class Basic(commands.Cog):
         sql_members = self.sql.get_members(guild.id)
         if len(sql_members) > 0:
             sql_members = list(map(lambda x: x[2], sql_members))
-        for member in guild.members:
-            if member.id not in sql_members:
-                members_add.append((member.guild.id, member.id, member.name+'#'+member.discriminator, member.display_name))
+        fetch_members = await guild.fetch_members().flatten()
+        while len(fetch_members) != 0:
+            for member in fetch_members:
+                if member.id not in sql_members:
+                    members_add.append((member.guild.id, member.id, member.name+'#'+member.discriminator, member.display_name))
+                    sql_members.append(member.id)
+            fetch_members = await guild.fetch_members(after=fetch_members[0]).flatten()
         self.sql.add_members(members_add)
         self.logger.info(f'Bot joined into new guild. ID:{guild.id}; Name:{guild.name}')
 
@@ -72,6 +84,7 @@ class Basic(commands.Cog):
             sql_members = list(map(lambda x: x[2], sql_members))
         if member.id not in sql_members:
             self.sql.add_members([(member.guild.id, member.id, member.name+'#'+member.discriminator, member.display_name)])
+
 
 
 def setup(client: bot.mybot.Bot):
