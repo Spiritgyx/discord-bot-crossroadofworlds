@@ -3,6 +3,7 @@ import logging
 import asyncio
 import sys
 import os
+import discord
 import bot
 from bot.mybot import Bot, get_prefix
 from bot.mylogger import MyLogger
@@ -46,6 +47,9 @@ if __name__ == '__main__':
     logger = MyLogger(__name__, levels=(level, logging.INFO), filename=f"{__name__}.log")
     logger.debug('Start program')
     token = get_token()
-    client = Bot(command_prefix=get_prefix, level=level)
+    intents = discord.Intents.default()
+    intents.members = True
+    intents.messages = True
+    client = Bot(command_prefix=get_prefix, level=level, intents=intents)
     client.load_exts()
     client.run(token)
