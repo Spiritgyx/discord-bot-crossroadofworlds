@@ -9,8 +9,13 @@ from bot.sql import Sql
 
 
 def get_prefix(cl, msg: commands.Context):
-    with open(os.getcwd()+'/jsons/prefixes.json') as f:
+    with open(os.getcwd()+'/jsons/prefixes.json', 'r') as f:
         prefixes = json.load(f)
+    if str(msg.guild.id) not in prefixes.keys():
+        prefixes[str(msg.guild.id)] = '##'
+        with open(os.getcwd() + '/jsons/prefixes.json', 'w') as f:
+            data = json.dumps(prefixes, indent=4, ensure_ascii=True)
+            f.write(data)
     return prefixes.get(str(msg.guild.id), '##')
 
 
