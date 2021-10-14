@@ -6,6 +6,15 @@ from bot.mylogger import MyLogger
 
 
 def check_ext(ext: str):
+    """
+    Function check valid extensions **path** or **name**
+
+    Parameters
+    ------------
+    ext: :class:`str`
+        Extension path.
+        Example: [bot.extension.EXTNAME]
+    """
     if not ext.startswith('bot.extensions.'):
         raise Exception("Invalid extension path.")
     if ext.endswith(('.basic', '.extloader')):
@@ -23,6 +32,17 @@ class Loader(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def load(self, ctx: commands.Context, ext: str):
+        """
+        Function to load extension **path**
+
+        Parameters
+        ------------
+        ctx: :class:`discord.ext.commands.Context`
+            Context argument.
+        ext: :class:`str`
+            Extension path.
+            Example: [bot.extension.EXTNAME]
+        """
         try:
             check_ext(ext)
             self.client.load_extension(ext)
@@ -35,6 +55,17 @@ class Loader(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def unload(self, ctx: commands.Context, ext: str):
+        """
+        Function to unload extension **path**
+
+        Parameters
+        ------------
+        ctx: :class:`discord.ext.commands.Context`
+            Context argument.
+        ext: :class:`str`
+            Extension path.
+            Example: [bot.extension.EXTNAME]
+        """
         try:
             check_ext(ext)
             self.client.unload_extension(ext)
@@ -47,6 +78,17 @@ class Loader(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def reload(self, ctx: commands.Context, ext: str):
+        """
+        Function to reload extension **path**
+
+        Parameters
+        ------------
+        ctx: :class:`discord.ext.commands.Context`
+            Context argument.
+        ext: :class:`str`
+            Extension path.
+            Example: [bot.extension.EXTNAME]
+        """
         try:
             check_ext(ext)
 

@@ -46,10 +46,13 @@ if __name__ == '__main__':
     # Create my logger
     logger = MyLogger(__name__, levels=(level, logging.INFO), filename=f"{__name__}.log")
     logger.debug('Start program')
+    # Get token from .env or input manual.
     token = get_token()
+    # Require to get members and messages
     intents = discord.Intents.default()
     intents.members = True
     intents.messages = True
+    # Initialize a bot
     client = Bot(command_prefix=get_prefix, level=level, intents=intents)
     client.load_exts()
     client.run(token)

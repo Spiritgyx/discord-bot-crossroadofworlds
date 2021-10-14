@@ -9,6 +9,7 @@ from bot.sql import Sql
 
 
 def get_prefix(cl, msg: commands.Context):
+    """Function return prefix for current message guild."""
     with open(os.getcwd()+'/jsons/prefixes.json', 'r') as f:
         prefixes = json.load(f)
     if str(msg.guild.id) not in prefixes.keys():
@@ -19,19 +20,15 @@ def get_prefix(cl, msg: commands.Context):
     return prefixes.get(str(msg.guild.id), '##')
 
 
-# TODO:
-# TODO: documentation
+# TODO: documentation T_T
 class Bot(commands.Bot):
     def __init__(self, *args, token=None, level=20, **kwargs):
         self.level = level
         self.logger = MyLogger('bot', filename='bot.log', levels=(level, 20))
         self.sql = Sql(level=level)
-        # if token is None:
-        #    raise Exception("Enter token")
         super().__init__(*args, **kwargs)
 
     def load_exts(self):
-        #self.load_extension('extensions.extloader')
         exts = set(EXTS)
         for ext in exts:
             try:
