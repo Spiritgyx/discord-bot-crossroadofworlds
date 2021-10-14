@@ -40,9 +40,19 @@
       "inline": false
     },
     {
-      "name": "Field name3",
+      "name": "Link",
       "value": "[hyperlink text](https://discord.com/)",
       "inline": true
+    },
+    {
+      "name": "Empty text",
+      "value": "",
+      "inline": true
+    },
+    {
+      "name": "Role awaw",
+      "value": "<@&898230014246539294>",
+      "inline": false
     }
   ]
 }

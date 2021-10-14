@@ -157,6 +157,10 @@ class Testing(commands.Cog):
                 continue
             name = field.get("name", None)
             value = field.get("value", None)
+            if name == "":
+                field["name"] = "noname"
+            if value == "":
+                field["value"] = "no value"
             inline = field.get("inline", False)
             if not name and not value:
                 logging.warning(
