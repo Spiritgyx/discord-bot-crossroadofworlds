@@ -170,6 +170,5 @@ class Testing(commands.Cog):
         await ctx.send(embed=e)
 
 
-
 def setup(client: bot.mybot.Bot):
     client.add_cog(Testing(client))
