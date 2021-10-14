@@ -1,0 +1,48 @@
+{
+  "object_name": "test_post",
+  "title": "Title of post",
+  "description": "Optional description for post",
+  "url": "https://discord.com/",
+  "colour": "FF00FF",
+  "image": {
+    "optional": true,
+    "url": "https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png"
+  },
+  "thumbnail": {
+    "optional": true,
+    "url": "https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png"
+  },
+  "footer": {
+    "optional": true,
+    "icon_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCduiGgGviDM3_qyPJEe6u9paI0mZed7qYIJzNYpZpD8XbRJyhliQuz6IM5E2aRzcs8Tc&usqp=CAU",
+    "text": "text in bottom area of Embed WHITE CAT"
+  },
+  "author": {
+    "optional": true,
+    "name": "Name of author BLACK CAT",
+    "icon_url": "https://images.squarespace-cdn.com/content/v1/588cd03603596e0fcbb9c506/1631054871859-RHOU85X9K2SNASNNWKGN/Cwtch+12.jpeg",
+    "url": "https://images.squarespace-cdn.com/content/v1/588cd03603596e0fcbb9c506/1631054871859-RHOU85X9K2SNASNNWKGN/Cwtch+12.jpeg"
+  },
+  "fields": [
+    {
+      "name": "Field name1.1",
+      "value": "Field text1.1 (inline)",
+      "inline": true
+    },
+    {
+      "name": "Field name1.2",
+      "value": "Field text1.2 (inline)",
+      "inline": true
+    },
+    {
+      "name": "Field name2",
+      "value": "Field text2",
+      "inline": false
+    },
+    {
+      "name": "Field name3",
+      "value": "[hyperlink text](https://discord.com/)",
+      "inline": true
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "object_name": "example_unique_name_of_post(No spaces)",
+  "title": "Title of post",
+  "description": "Optional description for post",
+  "url": "http URL with hyperlink text [title]",
+  "colour": "FF00FF",
+  "image": {
+    "optional": true,
+    "url": "image URL or empty, if not needed"
+  },
+  "thumbnail": {
+    "optional": true,
+    "url": "image URL or empty, if not needed"
+  },
+  "footer": {
+    "optional": true,
+    "icon_url": "icon URL or empty, if not needed",
+    "text": "text in bottom area of Embed"
+  },
+  "author": {
+    "optional": true,
+    "name": "Name of author",
+    "icon_url": "icon URL or empty, if not needed",
+    "url": "http URL with hyperlink text [name]"
+  },
+  "fields": [
+    {
+      "name": "Field name",
+      "value": "Field text",
+      "inline": true
+    },
+    {
+      "name": "Field name",
+      "value": "Field text",
+      "inline": false
+    },
+    {
+      "name": "Field name",
+      "value": "[hyperlink text](https://URL.com/)",
+      "inline": true
+    }
+  ]
+}

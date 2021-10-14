@@ -1,0 +1,29 @@
+{
+  "object_name": "test_post2",
+  "title": "Title of post",
+  "description": "Post without ",
+  "url": "https://discord.com/",
+  "colour": "FF00FF",
+  "fields": [
+    {
+      "name": "Field name1.1",
+      "value": "Field text1.1 (inline)",
+      "inline": true
+    },
+    {
+      "name": "Field name1.2",
+      "value": "Field text1.2 (inline)",
+      "inline": true
+    },
+    {
+      "name": "Field name2",
+      "value": "Field text2",
+      "inline": false
+    },
+    {
+      "name": "Field name3",
+      "value": "[hyperlink text](https://discord.com/)",
+      "inline": true
+    }
+  ]
+}
