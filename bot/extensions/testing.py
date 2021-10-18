@@ -1,5 +1,3 @@
-import logging
-
 import discord.ext.commands
 from discord.ext import commands, tasks
 from discord import Permissions
@@ -152,7 +150,7 @@ class Testing(commands.Cog):
         list_fields = post.get("fields", [])
         for i, field in enumerate(list_fields):
             if not type(field) is dict:
-                logging.warning(
+                self.logger.warning(
                     f"Post {post['name']}; {i}) type is error [{type(field)}] not [dict]")
                 continue
             name = field.get("name", None)
@@ -163,7 +161,7 @@ class Testing(commands.Cog):
                 field["value"] = "no value"
             inline = field.get("inline", False)
             if not name and not value:
-                logging.warning(
+                self.logger.warning(
                     f"Post {post['name']}; {i}) NAME and VALUE is empty")
                 continue
             e.add_field(**field)
