@@ -1,3 +1,5 @@
+import sys
+
 import discord.ext.commands
 from discord.ext import commands, tasks
 from discord import Permissions
@@ -6,6 +8,11 @@ from bot.mylogger import MyLogger
 from typing import List, Iterator
 import os
 import json
+
+
+async def check_emojis(self: bot.extensions.basic.Basic, client: bot.mybot.Bot):
+
+    pass
 
 
 class Basic(commands.Cog):
@@ -58,6 +65,12 @@ class Basic(commands.Cog):
                         sql_members.append(member.id)
                 fetch_members = await guild.fetch_members(after=fetch_members[0]).flatten()
         self.sql.add_members(members_add)
+
+        # Check emojis
+        try:
+            self.check_emojis()
+        except:
+            self.logger.error(sys.exc_info())
         self.logger.info('Bot is ready!')
 
     @commands.Cog.listener()
@@ -106,6 +119,14 @@ class Basic(commands.Cog):
             self.sql.add_members(
                 [(member.guild.id, member.id, member.name + '#' + member.discriminator, member.display_name)])
 
+    @commands.Cog.listener()
+    async def on_guild_emojis_update(self, guild, before, after):
+        try:
+            self.check_emojis(guild.id)
+        except:
+            self.logger.error(sys.exc_info())
+        pass
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def prefix_change(self, ctx: commands.Context, prefix: str = "##"):
@@ -127,6 +148,18 @@ class Basic(commands.Cog):
             f.write(data)
         # Send message of change to admin.
         await ctx.send(f"Префикс комманд изменён на '{prefix}'.")
+
+    def check_emojis(self, guild_id: int = None):
+        sql_emojis = self.sql.get_emojis(guild_id)
+        emoji_all_id = list(map(lambda x: x[0], sql_emojis))
+        add_emojis = []
+        emoji: discord.Emoji
+        for emoji in self.client.emojis:
+            # emoji.id, emoji.guild_id, emoji.animated, emoji.name
+            raw = (emoji.id, emoji.guild_id, emoji.name, int(emoji.animated))
+            if emoji.id not in emoji_all_id:
+                add_emojis.append(raw)
+        self.sql.add_emojis(add_emojis)
 
 
 def setup(client: bot.mybot.Bot):

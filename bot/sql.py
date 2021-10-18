@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from mylogger import MyLogger
+from typing import List, Tuple, Union
 
 
 SQL_CREATE_TABLES = {
@@ -17,12 +18,34 @@ SQL_CREATE_TABLES = {
                      "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id)"
                      ");"),
     "list_channels": ("CREATE TABLE IF NOT EXISTS list_channels ("
-                      "id integer PRIMARY KEY,"
+                      "channel_id integer PRIMARY KEY,"
                       "guild_id integer NOT NULL,"
-                      "channel_id integer NOT NULL,"
+                      # "channel_id integer NOT NULL,"
                       "channel_name text NOT NULL,"
                       "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id)"
-                      ");")
+                      ");"),
+    "list_react_msg": ("CREATE TABLE IF NOT EXISTS list_react_msg ("
+                       "message_id integer PRIMARY KEY,"
+                       "guild_id integer NOT NULL,"
+                       "channel_id integer NOT NULL,"
+                       "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id),"
+                       "FOREIGN KEY (channel_id) REFERENCES list_channels (channel_id)"
+                       ");"),
+    "list_emojis": ("CREATE TABLE IF NOT EXISTS list_emojis ("
+                    "emoji_id integer PRIMARY KEY,"
+                    "guild_id integer NOT NULL,"
+                    "emoji_name text NOT NULL,"
+                    "emoji_anim integer NOT NULL,"
+                    "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id)"
+                    ");"),
+    "list_reactions": ("CREATE TABLE IF NOT EXISTS list_reactions ("
+                       "message_id integer NOT NULL,"
+                       "emoji_id integer NOT NULL,"
+                       "reaction_type text NOT NULL,"
+                       "reaction_argument text NOT NULL,"
+                       "FOREIGN KEY (emoji_id) REFERENCES list_emojis (emoji_id),"
+                       "FOREIGN KEY (message_id) REFERENCES list_react_msg (message_id),"
+                       ");")
 }
 
 
@@ -95,3 +118,54 @@ class Sql:
             ), member)
         self.conn.commit()
         self.logger.info(f"Added {len(members)} members in DB.")
+
+
+    def get_emojis(self, guild_id: int = None):
+        """
+        Return all emojis or emojis in selected guild from SQL DataBase.
+
+        Parameters
+        -----------
+        guild_id: :class:`int`
+            optional integer Guild ID
+
+        Returns
+        --------
+        :class:`List[Tuple[int, int, str, int]]`
+            Emoji ID, Guild ID, Emoji name, Emoji animated
+        """
+        c = self.conn.cursor()
+        if guild_id is None:
+            c.execute((
+                f"SELECT * FROM list_emojis;"
+            ))
+        else:
+            c.execute((
+                f"SELECT * FROM list_emojis "
+                f"WHERE guild_id={guild_id};"
+            ))
+        emojis = c.fetchall()
+        return emojis
+
+    def add_emojis(self, emojis):
+        """
+        Add emojis to SQL DataBase.
+
+        Parameters
+        -----------
+        emojis: :class:`List[Tuple[int, int, str, int]]`
+            Emoji ID, Guild ID, Emoji name, Emoji animated
+        """
+        if len(emojis) == 0:
+            self.logger.info(f"All emojis in DB.")
+            return 0
+        c = self.conn.cursor()
+        for emoji in emojis:
+            self.logger.debug(f"Add new emoji: {emoji}")
+            c.execute((
+                "INSERT INTO list_emojis ("
+                "emoji_id, guild_id, emoji_name, emoji_anim"
+                ") VALUES (?, ?, ?, ?);"
+            ), emoji)
+        self.conn.commit()
+        self.logger.info(f"Added {len(emojis)} emoji in DB.")

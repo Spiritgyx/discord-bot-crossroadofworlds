@@ -1,7 +1,6 @@
 import os, sys, asyncio, json
 import discord
 from discord.ext import commands, tasks
-
 import bot
 from bot.mylogger import MyLogger
 from bot.utils.exts import EXTS
@@ -20,7 +19,7 @@ def get_prefix(cl, msg: commands.Context):
     return prefixes.get(str(msg.guild.id), '##')
 
 
-# TODO: documentation T_T
+# TODO: reactions and roles
 class Bot(commands.Bot):
     def __init__(self, *args, token=None, level=20, **kwargs):
         self.level = level
