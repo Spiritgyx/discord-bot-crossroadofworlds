@@ -92,6 +92,22 @@ class Reactions(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def reaction(self, ctx: commands.Context, message: commands.MessageConverter,
                        emoji: str, cmd: str, argument: str):
+        """
+        Add reaction with binding action. args: MSG_ID EMOJI COMMAND ARGUMENT
+
+        Parameters
+        -----------
+        ctx: :class:`commands.Context`
+            Context
+        message: :class:`discord.Message`
+            MessageID or ChannelID-MessageID
+        emoji: :class:`discord.Emoji`
+            Emoji string format
+        cmd: :class:`str`
+            Command
+        argument: :str`
+            Argument to command
+        """
         message: discord.Message
         if cmd == 'add_role':
             try:
