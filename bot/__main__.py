@@ -52,6 +52,7 @@ if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.members = True
     intents.messages = True
+    intents.reactions = True
     # Initialize a bot
     client = Bot(command_prefix=get_prefix, level=level, intents=intents)
     client.load_exts()
