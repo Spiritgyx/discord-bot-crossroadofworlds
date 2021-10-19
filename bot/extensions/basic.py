@@ -10,10 +10,6 @@ import os
 import json
 
 
-async def check_emojis(self: bot.extensions.basic.Basic, client: bot.mybot.Bot):
-
-    pass
-
 
 class Basic(commands.Cog):
     def __init__(self, client: bot.mybot.Bot):
