@@ -25,9 +25,12 @@ SQL_CREATE_TABLES = {
                       "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id)"
                       ");"),
     "list_react_msg": ("CREATE TABLE IF NOT EXISTS list_react_msg ("
-                       "message_id integer PRIMARY KEY,"
+                       "message_id integer NOT NULL,"
                        "guild_id integer NOT NULL,"
                        "channel_id integer NOT NULL,"
+                       "emoji text NOT NULL,"
+                       "reaction_type text NOT NULL,"
+                       "reaction_argument text NOT NULL,"
                        "FOREIGN KEY (guild_id) REFERENCES list_guilds (guild_id),"
                        "FOREIGN KEY (channel_id) REFERENCES list_channels (channel_id)"
                        ");"),
@@ -40,11 +43,11 @@ SQL_CREATE_TABLES = {
                     ");"),
     "list_reactions": ("CREATE TABLE IF NOT EXISTS list_reactions ("
                        "message_id integer NOT NULL,"
-                       "emoji_id integer NOT NULL,"
+                       "emoji text NOT NULL,"
                        "reaction_type text NOT NULL,"
                        "reaction_argument text NOT NULL,"
-                       "FOREIGN KEY (emoji_id) REFERENCES list_emojis (emoji_id),"
-                       "FOREIGN KEY (message_id) REFERENCES list_react_msg (message_id),"
+                       "FOREIGN KEY (message_id) REFERENCES list_react_msg (message_id)"
+                       # "FOREIGN KEY (emoji_id) REFERENCES list_emojis (emoji_id)"
                        ");")
 }
 
@@ -169,3 +172,53 @@ class Sql:
             ), emoji)
         self.conn.commit()
         self.logger.info(f"Added {len(emojis)} emoji in DB.")
+
+    def add_react(self, msg_id, guild_id, channel_id, emoji, cmd, arg):
+        """
+        Add reaction to message in DB.
+
+        Parameters
+        -----------
+        msg_id: :class:`int`
+            Message ID
+        guild_id: :class:`int`
+            Guild ID
+        channel_id: :class:`int`
+            Channel ID
+        emoji: :class:`str`
+            Emoji string format
+        cmd: :class:`str`
+            Command that to do.
+        arg: :class:`str`
+            Argument of command.
+        """
+
+        c = self.conn.cursor()
+        self.logger.debug(f"Add new reaction: {msg_id}; {emoji}; {cmd}; {arg}")
+        emoji_ = emoji.replace('<', '\\<')
+        raw = (msg_id, guild_id, channel_id, emoji, cmd, arg)
+        c.execute((
+            f"SELECT emoji FROM list_react_msg "
+            f"WHERE guild_id={guild_id} AND message_id={msg_id} AND emoji='{emoji}';"
+        ))
+        emoji_fetch = c.fetchall()
+        if len(emoji_fetch) == 0:
+            c.execute((
+                "INSERT INTO list_react_msg ("
+                "message_id, guild_id, channel_id, emoji, reaction_type, reaction_argument"
+                ") VALUES (?, ?, ?, ?, ?, ?);"
+            ), raw)
+            self.conn.commit()
+            self.logger.info(f"Added new reaction in DB.")
+        else:
+            self.logger.info(f"Reaction is exists in DB.")
+
+    def get_react_msg(self, guild_id: int, message_id: int):
+        c = self.conn.cursor()
+        c.execute((
+            f"SELECT * FROM list_react_msg "
+            f"WHERE guild_id={guild_id} AND message_id={message_id};"
+        ))
+        emojis = c.fetchall()
+        self.logger.debug(f'Get reaction on {message_id} - {len(emojis)} rows.')
+        return emojis
