@@ -53,7 +53,7 @@ SQL_CREATE_TABLES = {
 
 
 class Sql:
-    def __init__(self, db_path: str='database.db', level=20):
+    def __init__(self, db_path: str = 'database.db', level=20):
         self.logger = MyLogger('sql', filename='sql.log', levels=(level, 20))
         if not os.path.exists(db_path):
             self.conn = self.create_db(db_path)

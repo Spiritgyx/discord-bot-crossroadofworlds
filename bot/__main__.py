@@ -53,6 +53,7 @@ if __name__ == '__main__':
     intents.members = True
     intents.messages = True
     intents.reactions = True
+    intents.voice_states = True
     # Initialize a bot
     client = Bot(command_prefix=get_prefix, level=level, intents=intents)
     client.load_exts()
